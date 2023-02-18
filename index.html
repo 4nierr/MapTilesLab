@@ -93,10 +93,10 @@
                 'attribution': 'Map tiles by Ryan Fournier</a>'
             });
 
-            map.addSource('hospital-tiles', {
+            map.addSource('covid-tiles', {
                 'type': 'raster',
                 'tiles': [
-                    'assets/hospitalbuffer/{z}/{x}/{y}.png'
+                    'assets/covidrates/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
                 'attribution': 'Map tiles by Ryan Fournier'
@@ -112,12 +112,12 @@
             });
 
             map.addLayer({
-                'id': 'hospitals',
+                'id': 'covid',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
                 },
-                'source': 'hospital-tiles'
+                'source': 'covid-tiles'
             });
 
         });
@@ -126,12 +126,12 @@
         // After the last frame rendered before the map enters an "idle" state.
         map.on('idle', () => {
             // If these two layers were not added to the map, abort
-            if (!map.getLayer('sodo') || !map.getLayer('hospitals')) {
+            if (!map.getLayer('sodo') || !map.getLayer('covid')) {
                 return;
             }
 
             // Enumerate ids of the layers.
-            const toggleableLayerIds = ['sodo', 'hospitals'];
+            const toggleableLayerIds = ['sodo', 'covid'];
 
             // Set up the corresponding toggle button for each layer.
             for (const id of toggleableLayerIds) {
