@@ -93,6 +93,15 @@
                 'attribution': 'Map tiles by Ryan Fournier</a>'
             });
 
+            map.addSource('covidbase-tiles', {
+                'type': 'raster',
+                'tiles': [
+                    'assets/covidbasemap/{z}/{x}/{y}.png'
+                ],
+                'tileSize': 256,
+                'attribution': 'Map tiles by Ryan Fournier</a>'
+            });
+
             map.addSource('covid-tiles', {
                 'type': 'raster',
                 'tiles': [
@@ -120,18 +129,27 @@
                 'source': 'covid-tiles'
             });
 
+            map.addLayer({
+                'id': 'covidbase',
+                'type': 'raster',
+                'layout': {
+                    'visibility': 'none'
+                },
+                'source': 'covidbase-tiles'
+            });
+
         });
 
 
         // After the last frame rendered before the map enters an "idle" state.
         map.on('idle', () => {
             // If these two layers were not added to the map, abort
-            if (!map.getLayer('sodo') || !map.getLayer('covid')) {
+            if (!map.getLayer('sodo') || !map.getLayer('covid') || !map.getLayer('covidbase')) {
                 return;
             }
 
             // Enumerate ids of the layers.
-            const toggleableLayerIds = ['sodo', 'covid'];
+            const toggleableLayerIds = ['sodo', 'covid', 'covidbase'];
 
             // Set up the corresponding toggle button for each layer.
             for (const id of toggleableLayerIds) {
