@@ -84,25 +84,34 @@
 
         map.on('load', () => { //simplifying the function statement: arrow with brackets to define a function
 
-            map.addSource('sodo-tiles', {
+            map.addSource('basemap-tiles', {
                 'type': 'raster',
                 'tiles': [
-                    'assets/sodo/{z}/{x}/{y}.png'
+                    'assets/basemap/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
                 'attribution': 'Map tiles by Ryan Fournier</a>'
             });
 
-            map.addSource('covidbase-tiles', {
+            map.addSource('hospitals-tiles', {
                 'type': 'raster',
                 'tiles': [
-                    'assets/covidbasemap/{z}/{x}/{y}.png'
+                    'assets/hospitals/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
                 'attribution': 'Map tiles by Ryan Fournier</a>'
             });
 
-            map.addSource('covid-tiles', {
+            map.addSource('hospitalsbase-tiles', {
+                'type': 'raster',
+                'tiles': [
+                    'assets/hospitalsbase/{z}/{x}/{y}.png'
+                ],
+                'tileSize': 256,
+                'attribution': 'Map tiles by Ryan Fournier'
+            });
+
+            map.addSource('covidrates-tiles', {
                 'type': 'raster',
                 'tiles': [
                     'assets/covidrates/{z}/{x}/{y}.png'
@@ -112,30 +121,39 @@
             });
 
             map.addLayer({
-                'id': 'sodo',
+                'id': 'basemap',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
                 },
-                'source': 'sodo-tiles'
+                'source': 'basemap-tiles'
             });
 
             map.addLayer({
-                'id': 'covid',
+                'id': 'hospitals',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
                 },
-                'source': 'covid-tiles'
+                'source': 'hospitals-tiles'
             });
 
             map.addLayer({
-                'id': 'covidbase',
+                'id': 'hospitalsbase',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
                 },
-                'source': 'covidbase-tiles'
+                'source': 'hospitalsbase-tiles'
+            });
+
+            map.addLayer({
+                'id': 'covidrates',
+                'type': 'raster',
+                'layout': {
+                    'visibility': 'none'
+                },
+                'source': 'covidrates-tiles'
             });
 
         });
@@ -144,12 +162,12 @@
         // After the last frame rendered before the map enters an "idle" state.
         map.on('idle', () => {
             // If these two layers were not added to the map, abort
-            if (!map.getLayer('sodo') || !map.getLayer('covid') || !map.getLayer('covidbase')) {
+            if (!map.getLayer('basemap') || !map.getLayer('hospitals') || !map.getLayer('hospitalsbase') || !map.getLayer('covidrates')) {
                 return;
             }
 
             // Enumerate ids of the layers.
-            const toggleableLayerIds = ['sodo', 'covid', 'covidbase'];
+            const toggleableLayerIds = ['basemap', 'hospitals', 'hospitalsbase', 'covidrates'];
 
             // Set up the corresponding toggle button for each layer.
             for (const id of toggleableLayerIds) {
