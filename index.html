@@ -65,6 +65,19 @@
         #menu a.active:hover {
             background: #3074a4;
         }
+        #map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.8);
+            border-style: solid;
+            border-width: 1px;
+            border-color: rgba(0, 0, 0, 0.2);
+            margin-left: 20px;
+            font-family: Arial, sans-serif;
+            overflow: auto;
+            border-radius: 3px;
+        }
     </style>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
 </head>
@@ -72,6 +85,9 @@
 <body>
     <nav id="menu"></nav>
     <div id='map'></div>
+    <div id="map-overlay">
+        Click a map on the right to display different maps.
+    </div>
     <script type="text/javascript">
         mapboxgl.accessToken =
             'pk.eyJ1IjoiamFrb2J6aGFvIiwiYSI6ImNpcms2YWsyMzAwMmtmbG5icTFxZ3ZkdncifQ.P9MBej1xacybKcDN_jehvw';
@@ -81,6 +97,7 @@
             zoom: 12, // starting zoom
             center: [-122.2559435, 47.6002614] // starting center
         });
+        map.addControl(new mapboxgl.NavigationControl(), 'bottom-left');
 
         map.on('load', () => { //simplifying the function statement: arrow with brackets to define a function
 
@@ -90,7 +107,7 @@
                     'assets/basemap/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
-                'attribution': 'Map tiles by Ryan Fournier</a>'
+                'attribution': 'Map tiles by Ryan Fournier. Basemap created with MapBox.</a>'
             });
 
             map.addSource('hospitals-tiles', {
@@ -99,7 +116,7 @@
                     'assets/hospitals/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
-                'attribution': 'Map tiles by Ryan Fournier</a>'
+                'attribution': 'Map tiles by Ryan Fournier. Hospital locations.</a>'
             });
 
             map.addSource('hospitalsbase-tiles', {
@@ -108,7 +125,7 @@
                     'assets/hospitalsbase/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
-                'attribution': 'Map tiles by Ryan Fournier'
+                'attribution': 'Map tiles by Ryan Fournier. Hospital locations on top of MapBox basemap.'
             });
 
             map.addSource('covidrates-tiles', {
@@ -117,11 +134,11 @@
                     'assets/covidrates/{z}/{x}/{y}.png'
                 ],
                 'tileSize': 256,
-                'attribution': 'Map tiles by Ryan Fournier'
+                'attribution': 'Map tiles by Ryan Fournier. Basemap provided by MapBox, COVID rates by Census Tract.'
             });
 
             map.addLayer({
-                'id': 'basemap',
+                'id': 'Basemap',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
@@ -130,7 +147,7 @@
             });
 
             map.addLayer({
-                'id': 'hospitals',
+                'id': 'Hospitals',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
@@ -139,7 +156,7 @@
             });
 
             map.addLayer({
-                'id': 'hospitalsbase',
+                'id': 'Hospitals Base',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
@@ -148,7 +165,7 @@
             });
 
             map.addLayer({
-                'id': 'covidrates',
+                'id': 'COVID Rates',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
@@ -157,17 +174,19 @@
             });
 
         });
+        
 
 
         // After the last frame rendered before the map enters an "idle" state.
         map.on('idle', () => {
             // If these two layers were not added to the map, abort
-            if (!map.getLayer('basemap') || !map.getLayer('hospitals') || !map.getLayer('hospitalsbase') || !map.getLayer('covidrates')) {
+            if (!map.getLayer('Basemap') || !map.getLayer('Hospitals') || !map.getLayer('Hospitals Base') || !map.getLayer('COVID Rates')) {
                 return;
             }
+            
 
             // Enumerate ids of the layers.
-            const toggleableLayerIds = ['basemap', 'hospitals', 'hospitalsbase', 'covidrates'];
+            const toggleableLayerIds = ['Basemap', 'Hospitals', 'Hospitals Base', 'COVID Rates'];
 
             // Set up the corresponding toggle button for each layer.
             for (const id of toggleableLayerIds) {
@@ -213,7 +232,9 @@
                             'visible'
                         );
                     }
+
                 };
+                
 
                 // in the menu place holder, insert the layer links.
                 const layers = document.getElementById('menu');
